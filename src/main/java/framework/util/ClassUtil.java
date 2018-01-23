@@ -17,10 +17,20 @@ import java.util.jar.JarFile;
 public class ClassUtil {
     private static final Logger LOGGER = LoggerFactory.getLogger(ClassUtil.class);
 
+    /**
+     * 得到该类的类加载器用于加载指定包下的类
+     * @return
+     */
     public static ClassLoader getClassLoager(){
         return Thread.currentThread().getContextClassLoader();
     }
 
+    /**
+     *         借助获取的此类的类加载器进行指定包下的类加载工作
+     * @param className
+     * @param isInitialized
+     * @return
+     */
     public static Class<?> loadClass(String className,boolean isInitialized){
         Class<?> t = null;
         try {
@@ -35,6 +45,14 @@ public class ClassUtil {
 
     }
 
+    /**
+     *        拿到指定包下的所有的类对象的集合
+     *        在拿到的过程中会去主动加载
+     *        packageName 下有jar或者其他文件类型
+     *        对于jar文件进行加载 其他文件扔给addClass进行加载
+     * @param packageName
+     * @return
+     */
     public static Set<Class<?>> getClassSet(String packageName){
         Set<Class<?>> classes = new HashSet<Class<?>>();
         try{
@@ -44,9 +62,11 @@ public class ClassUtil {
                 if(url != null){
                     String protocol = url.getProtocol();
                     if(protocol.equals("file")){
+                        //class文件走此加载方式
                         String packagePath = url.getPath().replaceAll("%20"," ");
                         addClass(classes,packagePath,packageName);
                     }else if(protocol.equals("jar")){
+                        // jar 文件 拿到所有的classw文件加载
                         JarURLConnection connection = (JarURLConnection) url.openConnection();
                         if(connection != null){
                             JarFile jarFile = connection.getJarFile();
