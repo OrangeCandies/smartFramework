@@ -1,5 +1,7 @@
-package framework.util;
+package framework.helper;
 
+import framework.util.CollectionUtil;
+import framework.util.PropsUtil;
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.handlers.BeanHandler;
