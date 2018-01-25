@@ -25,7 +25,7 @@ public class ProxyManager {
              */
             @Override
             public Object intercept(Object o, Method method, Object[] objects, MethodProxy methodProxy) throws Throwable {
-                return new ProxyChain(targetClass, o, method, methodProxy, objects, proxies).doProxyChain();
+               return new ProxyChain(targetClass, o, method, methodProxy, objects, proxies).doProxyChain();
             }
         });
     }

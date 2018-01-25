@@ -1,6 +1,5 @@
 package utilTest;
 
-import org.junit.Test;
 import org.smart.framework.HelperLoader;
 import org.smart.framework.helper.BeanHelper;
 import org.smart.model.Customer;
@@ -12,8 +11,8 @@ public class ClassTest {
 
 
 
-    @Test
-    public void testGetClass(){
+
+    public static void main(String[] args){
         HelperLoader.init();
         CustomerService customerService = BeanHelper.getBean(CustomerService.class);
         List<Customer> customerList = customerService.getCustomerList();

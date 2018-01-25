@@ -20,7 +20,9 @@ public abstract class AspectProxy implements Proxy {
         try {
             if(intercept(target,method,params)){
                 before(target,method,params);
-                result = method.invoke(target,params);
+                // 自己完成后放行  不可调用Method 否则会导致循环调用
+                // 和WebFilter很像
+                result = proxyChain.doProxyChain();
                 after(target,method,params);
             }else{
                 result = proxyChain.doProxyChain();
