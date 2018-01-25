@@ -18,7 +18,6 @@ public final class ControllerHelper {
     public static final Map<Requset, Handler> ACTION_MAP = new HashMap<>();
 
     static {
-        System.out.println("Bgin");
         Set<Class<?>> controllerClasses = ClassHelper.getControlClass();
         for (Class<?> controllerClass : controllerClasses) {
             Method[] methods = controllerClass.getMethods();
@@ -26,7 +25,6 @@ public final class ControllerHelper {
                 if (m.isAnnotationPresent(Action.class)) {
                     Action action = m.getAnnotation(Action.class);
                     String mapping = action.value();
-                    System.out.println(mapping);
                     if (!mapping.matches("\\w:/\\w*")) {
                         String[] array = mapping.split(":");
                         if (ArrayUtil.isNotEmpty(array) && array.length == 2) {

@@ -12,23 +12,23 @@ public abstract class AspectProxy implements Proxy {
     @Override
     public Object doProxy(ProxyChain proxyChain) {
         Object result = null;
-        Class targetClass = proxyChain.getTargetClass();
+        Object target = proxyChain.getTargetObject();
         Method method = proxyChain.getTargetMethod();
         Object[] params = proxyChain.getParam();
 
         begin();
         try {
-            if(intercept(targetClass,method,params)){
-                before(targetClass,method,params);
-                result = method.invoke(targetClass,params);
-                after(targetClass,method,params);
+            if(intercept(target,method,params)){
+                before(target,method,params);
+                result = method.invoke(target,params);
+                after(target,method,params);
             }else{
                 result = proxyChain.doProxyChain();
             }
 
         } catch (Exception e) {
             LOGGER.error("proxy failure",e);
-            error(targetClass,method,params,e);
+            error(target,method,params,e);
         } catch (Throwable throwable) {
             throwable.printStackTrace();
         } finally {
@@ -37,17 +37,17 @@ public abstract class AspectProxy implements Proxy {
         return result;
     }
 
-    public void before(Class targetClass, Method method, Object[] params) {
+    public void before(Object targetClass, Method method, Object[] params) {
     }
 
-    public void after(Class targetClass, Method method, Object[] params) {
+    public void after(Object targetClass, Method method, Object[] params) {
     }
 
-    public  void error(Class targetClass, Method method, Object[] params, Exception e) {
+    public  void error(Object targetClass, Method method, Object[] params, Exception e) {
 
     }
 
-    public boolean intercept(Class targetClass, Method method, Object[] params) {
+    public boolean intercept(Object targetClass, Method method, Object[] params) {
         return true;
     }
 

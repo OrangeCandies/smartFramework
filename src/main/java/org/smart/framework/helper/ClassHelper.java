@@ -32,7 +32,7 @@ public class ClassHelper {
     }
 
     public static Set<Class<?>> getClassBySuper(Class<?> superClass) {
-        Set<Class<?>> set = CLASS_SET.stream().filter(cls -> cls.isAssignableFrom(superClass) && !superClass.equals(cls)).collect(Collectors.toSet());
+        Set<Class<?>> set = CLASS_SET.stream().filter(cls -> superClass.isAssignableFrom(cls) && !superClass.equals(cls)).collect(Collectors.toSet());
         return set;
     }
 

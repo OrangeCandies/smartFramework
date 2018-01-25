@@ -9,12 +9,13 @@ public final class HelperLoader {
         Class[] classes = new Class[]{
                 ConfigHelper.class,
                 ClassHelper.class,
-                IocHelper.class,
                 AopHelper.class,
+                IocHelper.class,
                 ControllerHelper.class
 
         };
         for(Class c:classes){
+            System.out.println(c.getName());
             ClassUtil.loadClass(c.getName(),true);
         }
     }

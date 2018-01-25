@@ -12,9 +12,8 @@ public final class IocHelper {
 
     static{
         Map<Class<?>,Object> beanMap = BeanHelper.getBeanMap();
-        System.out.println(beanMap.size());
         if(CollectionUtil.isNotEmpty(beanMap)){
-            System.out.println("in it");
+
             for(Map.Entry<Class<?>,Object>entry: beanMap.entrySet()){
                 Class<?> t = entry.getKey();
                 Object value = entry.getValue();
@@ -23,7 +22,6 @@ public final class IocHelper {
                 if(ArrayUtils.isNotEmpty(fields)){
                     for(Field f:fields){
                         if(f.isAnnotationPresent(Inject.class)){
-                            System.out.println(f);
                             Class<?> beanType = f.getType();
                             Object instance = beanMap.get(beanType);
                             if(instance != null){

@@ -27,8 +27,8 @@ public class ProxyChain {
         this.proxies = proxies;
     }
 
-    public Class<?> getTargetClass() {
-        return targetClass;
+    public Object getTargetObject() {
+        return targetObject;
     }
 
     public Method getTargetMethod() {
@@ -42,7 +42,8 @@ public class ProxyChain {
     public Object doProxyChain() throws Throwable{
         Object result = null;
         if(proxyIndex < proxies.size()){
-            result = proxies.get(proxyIndex++).doProxy(this);
+            proxyIndex++;
+            result = proxies.get(proxyIndex-1).doProxy(this);
         }else{
             result = methodProxy.invokeSuper(targetObject,param);
         }
