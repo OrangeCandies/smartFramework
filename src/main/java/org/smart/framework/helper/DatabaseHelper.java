@@ -29,11 +29,11 @@ public class DatabaseHelper{
     private static final ThreadLocal<Connection> CONNECTION_THREAD_LOCAL = new ThreadLocal<>();
 
     static {
-        Properties p = PropsUtil.loadProps("config.properties");
-        DRIVER = p.getProperty("jdbc.driver");
-        URL = p.getProperty("jdbc.url");
-        USERNAME = p.getProperty("jdbc.username");
-        PASSWORD = p.getProperty("jdbc.password");
+        Properties p = PropsUtil.loadProps("smart.properties");
+        DRIVER = p.getProperty("smart.framework.jdbc.driver");
+        URL = p.getProperty("smart.framework.jdbc.url");
+        USERNAME = p.getProperty("smart.framework.jdbc.username");
+        PASSWORD = p.getProperty("smart.framework.jdbc.password");
 
         BASIC_DATA_SOURCE.setUrl(URL);
         BASIC_DATA_SOURCE.setDriverClassName(DRIVER);
