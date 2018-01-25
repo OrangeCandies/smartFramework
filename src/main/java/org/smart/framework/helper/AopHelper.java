@@ -19,16 +19,13 @@ public final class AopHelper {
      * 将增强类注入到IOC容器中
      */
     static {
-        System.out.println("AOPHELPER 初始化了");
         try {
             Map<Class<?>, Set<Class<?>>> proxyMap = createProxyMap();
-            System.out.println(proxyMap.size());
             Map<Class<?>, List<Proxy>> targetMap = createTargetMap(proxyMap);
             for (Map.Entry<Class<?>, List<Proxy>> entry : targetMap.entrySet()) {
                 Class<?> c = entry.getKey();
                 List<Proxy> proxies = entry.getValue();
                 Object proxy = ProxyManager.createProxy(c, proxies);
-                System.out.println("注入了");
                 BeanHelper.setBean(c, proxy);
             }
         } catch (Exception e) {
@@ -45,9 +42,7 @@ public final class AopHelper {
     private static Map<Class<?>, Set<Class<?>>> createProxyMap() throws Exception {
         Map<Class<?>, Set<Class<?>>> proxyMap = new HashMap<>();
         Set<Class<?>> proxyClasses = ClassHelper.getClassBySuper(AspectProxy.class);
-        System.out.println(proxyClasses.size());
         for (Class<?> t : proxyClasses) {
-            System.out.println(t.getSimpleName());
             if (t.isAnnotationPresent(Aspect.class)) {
                 Aspect aspect = t.getAnnotation(Aspect.class);
                 Set<Class<?>> targetClass = createTargetClass(aspect);

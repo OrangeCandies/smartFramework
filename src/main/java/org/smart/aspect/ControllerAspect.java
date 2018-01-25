@@ -1,13 +1,13 @@
 package org.smart.aspect;
 
 import org.smart.framework.annocation.Aspect;
-import org.smart.framework.annocation.Service;
+import org.smart.framework.annocation.Controller;
 import org.smart.framework.proxy.AspectProxy;
 
 import java.lang.reflect.Method;
 
-@Aspect(Service.class)
-public class ServiceAspect extends AspectProxy {
+@Aspect(Controller.class)
+public class ControllerAspect extends AspectProxy {
 
     @Override
     public void before(Object targetClass, Method method, Object[] params) {

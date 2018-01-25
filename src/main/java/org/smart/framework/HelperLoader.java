@@ -15,7 +15,6 @@ public final class HelperLoader {
 
         };
         for(Class c:classes){
-            System.out.println(c.getName());
             ClassUtil.loadClass(c.getName(),true);
         }
     }

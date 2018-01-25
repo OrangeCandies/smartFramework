@@ -20,7 +20,6 @@ public class CustomerController {
     @Action("get:/customer")
     public View index(Param param){
         List<Customer> customerList = customerService.getCustomerList();
-        System.out.println("In controller");
         return new View("customer.jsp").addModel("customerLists",customerList);
     }
 }

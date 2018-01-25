@@ -10,7 +10,6 @@ import java.util.List;
 public class ProxyManager {
 
     public static <T> T createProxy(final Class<?> targetClass, final List<Proxy> proxies) {
-        System.out.println(targetClass.getSimpleName()+" 生成代理类");
         return (T) Enhancer.create(targetClass, new MethodInterceptor() {
 
             /**
