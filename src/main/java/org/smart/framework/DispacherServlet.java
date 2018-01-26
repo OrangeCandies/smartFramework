@@ -19,13 +19,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 
-@WebServlet({"/*"})
+@WebServlet(urlPatterns = {"/*"}, loadOnStartup = 0)
 public class DispacherServlet extends HttpServlet {
 
 
@@ -37,10 +36,10 @@ public class DispacherServlet extends HttpServlet {
 
         // 注册Servlet 处理JSP请求
         ServletRegistration jspServlet = servletContext.getServletRegistration("jsp");
-        jspServlet.addMapping(ConfigHelper.getAppJspPath()+"*");
+        jspServlet.addMapping(ConfigHelper.getAppJspPath() + "*");
         //注册Servlet处理静态资源
         ServletRegistration defaultServlet = servletContext.getServletRegistration("default");
-        defaultServlet.addMapping(ConfigHelper.getAppAssetPath()+"*");
+        defaultServlet.addMapping(ConfigHelper.getAppAssetPath() + "*");
 
     }
 
@@ -49,29 +48,29 @@ public class DispacherServlet extends HttpServlet {
         String requestMethod = req.getMethod().toLowerCase();
         String requestPath = req.getPathInfo();
         // 获取处理类
-        System.out.println(requestMethod+" "+requestPath);
-        Handler handler = ControllerHelper.getHandler(requestMethod,requestPath);
-        if(handler != null){
+        System.out.println(requestMethod + " " + requestPath);
+        Handler handler = ControllerHelper.getHandler(requestMethod, requestPath);
+        if (handler != null) {
             Class<?> controllerClass = handler.getControlClass();
             Object o = BeanHelper.getBean(controllerClass);
             // 创建参数请求对象
-            Map<String,Object> map = new HashMap<>();
+            Map<String, Object> map = new HashMap<>();
             Enumeration<String> parameterNames = req.getParameterNames();
-            while(parameterNames.hasMoreElements()){
+            while (parameterNames.hasMoreElements()) {
                 String paramName = parameterNames.nextElement();
                 String value = req.getParameter(paramName);
-                map.put(paramName,value);
+                map.put(paramName, value);
             }
             String body = CodeUtil.decodeUrl(StreamUtil.getString(req.getInputStream()));
-            if(StringUtil.isNotEmpty(body)){
-                String []params = body.split("&");
-                if(ArrayUtil.isNotEmpty(params)){
-                    for(String param:params){
+            if (StringUtil.isNotEmpty(body)) {
+                String[] params = body.split("&");
+                if (ArrayUtil.isNotEmpty(params)) {
+                    for (String param : params) {
                         String[] array = param.split("=");
-                        if(ArrayUtil.isNotEmpty(array) && array.length==2){
+                        if (ArrayUtil.isNotEmpty(array) && array.length == 2) {
                             String paramName = array[0];
                             String value = array[1];
-                            map.put(paramName,value);
+                            map.put(paramName, value);
                         }
                     }
                 }
@@ -79,31 +78,29 @@ public class DispacherServlet extends HttpServlet {
             Param param = new Param(map);
             Method action = handler.getActionMethod();
             Object result = null;
-            try {
-                result = action.invoke(o,param);
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            } catch (InvocationTargetException e) {
-                e.printStackTrace();
+            if (param.isEmpty()) {
+                result = ReflectionUtil.invokeMethod(o, action);
+            } else {
+                result = ReflectionUtil.invokeMethod(o, action, param);
             }
 
-            if(result instanceof View){
+            if (result instanceof View) {
 
-                View view = (View)result;
+                View view = (View) result;
                 String path = view.getPath();
-                if(path.startsWith("/")){
-                    resp.sendRedirect(req.getContextPath()+path);
-                }else{
+                if (path.startsWith("/")) {
+                    resp.sendRedirect(req.getContextPath() + path);
+                } else {
                     Map<String, Object> model = view.getModel();
-                    for(Map.Entry<String,Object> entry:model.entrySet()){
-                        req.setAttribute(entry.getKey(),entry.getValue());
+                    for (Map.Entry<String, Object> entry : model.entrySet()) {
+                        req.setAttribute(entry.getKey(), entry.getValue());
                     }
-                    req.getRequestDispatcher(ConfigHelper.getAppJspPath()+path).forward(req,resp);
+                    req.getRequestDispatcher(ConfigHelper.getAppJspPath() + path).forward(req, resp);
                 }
-            }else if(result instanceof Data){
-                Data data = (Data)result;
-                Object o1= data.getModel();
-                if(o1 != null){
+            } else if (result instanceof Data) {
+                Data data = (Data) result;
+                Object o1 = data.getModel();
+                if (o1 != null) {
                     resp.setContentType("application/json");
                     resp.setCharacterEncoding("UTF-8");
                     PrintWriter writer = resp.getWriter();
