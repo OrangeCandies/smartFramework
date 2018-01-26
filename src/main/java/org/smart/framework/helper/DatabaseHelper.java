@@ -1,13 +1,13 @@
 package org.smart.framework.helper;
 
-import org.smart.framework.util.CollectionUtil;
-import org.smart.framework.util.PropsUtil;
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.handlers.BeanHandler;
 import org.apache.commons.dbutils.handlers.BeanListHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.smart.framework.util.CollectionUtil;
+import org.smart.framework.util.PropsUtil;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-public class DatabaseHelper{
+public class DatabaseHelper {
 
     private static final String DRIVER;
     private static final String URL;
@@ -138,7 +138,7 @@ public class DatabaseHelper{
         values.replace(values.lastIndexOf(","), values.length(), ")");
         sql = sql + colums + values;
         Object[] params = fliedName.values().toArray();
-        return executeUpdate(sql,params) == 1;
+        return executeUpdate(sql, params) == 1;
     }
 
     public static String getTableName(Class<?> entity) {
@@ -157,4 +157,47 @@ public class DatabaseHelper{
             }
         }
     }
+
+    public static void benginTransaction() {
+        Connection connection = getConnection();
+        if (connection != null) {
+            try {
+                connection.setAutoCommit(false);
+            } catch (SQLException e) {
+                LOGGER.error("begin transaction failure", e);
+                e.printStackTrace();
+            } finally {
+                CONNECTION_THREAD_LOCAL.set(connection);
+            }
+        }
+    }
+
+    public static void commitTransaction() {
+        Connection connection = getConnection();
+        if (connection != null) {
+            try {
+                connection.commit();
+                connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            } finally {
+                CONNECTION_THREAD_LOCAL.remove();
+            }
+        }
+    }
+
+    public static void rollbackTransaction(){
+        Connection connection = getConnection();
+        if(connection != null){
+            try {
+                connection.rollback();
+                connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }finally {
+                CONNECTION_THREAD_LOCAL.remove();
+            }
+        }
+    }
+
 }

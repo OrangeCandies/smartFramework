@@ -1,6 +1,7 @@
 package org.smart.service;
 
 import org.smart.framework.annocation.Service;
+import org.smart.framework.annocation.Transaction;
 import org.smart.framework.helper.DatabaseHelper;
 import org.smart.model.Customer;
 
@@ -10,7 +11,8 @@ import java.util.Map;
 @Service
 public class CustomerService {
 
-
+    // 测试使用事务 查询没有实际的意义
+    @Transaction
     public List<Customer> getCustomerList(){
         List<Customer> customers = null;
         String sql = "SELECT * FROM customer";
@@ -27,7 +29,6 @@ public class CustomerService {
     public boolean createCustomer(Map<String,Object> feildMap) {
         return DatabaseHelper.insertEntity(Customer.class,feildMap);
     }
-
     public boolean updateCustomer(long id,Map<String,Object> feildMap) {
        return DatabaseHelper.updateEntity(Customer.class,id,feildMap);
     }
