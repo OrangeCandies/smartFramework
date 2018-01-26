@@ -14,4 +14,6 @@ public final class StringUtil {
     public static boolean isNotEmpty(String str){
         return !isEmpty(str);
     }
+
+    public static final String SEPARATOR = String.valueOf((char)29);
 }

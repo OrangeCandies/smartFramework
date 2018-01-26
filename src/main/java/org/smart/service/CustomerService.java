@@ -2,6 +2,7 @@ package org.smart.service;
 
 import org.smart.framework.annocation.Service;
 import org.smart.framework.annocation.Transaction;
+import org.smart.framework.bean.FileParam;
 import org.smart.framework.helper.DatabaseHelper;
 import org.smart.model.Customer;
 
@@ -26,7 +27,7 @@ public class CustomerService {
         return customer;
     }
 
-    public boolean createCustomer(Map<String,Object> feildMap) {
+    public boolean createCustomer(Map<String,Object> feildMap, FileParam fileParam) {
         return DatabaseHelper.insertEntity(Customer.class,feildMap);
     }
     public boolean updateCustomer(long id,Map<String,Object> feildMap) {
