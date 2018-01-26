@@ -44,40 +44,49 @@ public class DispacherServlet extends HttpServlet {
 
     @Override
     protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+
+        //松耦合 使Controller和Service在全局都能拿到Requset和Response
+        // 使用ThreadLocal来解决这个问题
+        ServletHelper.init(req,resp);
+
         String requestMethod = req.getMethod().toLowerCase();
         String requestPath = req.getPathInfo();
 
         //过滤掉favicon.ico 据说会挂掉
-        if(requestPath.equals("/favicon.ico")){
-            return;
-        }
-        // 获取处理类
-        Handler handler = ControllerHelper.getHandler(requestMethod, requestPath);
-        if (handler != null) {
-            Class<?> controllerClass = handler.getControlClass();
-            Object o = BeanHelper.getBean(controllerClass);
-            // 创建参数请求对象
-            Param param = null;
-            if(UploadHelper.isMultipart(req)){
-                param = UploadHelper.createParam(req);
-            }else{
-                param = RequsetHelper.createParam(req);
+        try{
+            if(requestPath.equals("/favicon.ico")){
+                return;
             }
+            // 获取处理类
+            Handler handler = ControllerHelper.getHandler(requestMethod, requestPath);
+            if (handler != null) {
+                Class<?> controllerClass = handler.getControlClass();
+                Object o = BeanHelper.getBean(controllerClass);
+                // 创建参数请求对象
+                Param param = null;
+                if(UploadHelper.isMultipart(req)){
+                    param = UploadHelper.createParam(req);
+                }else{
+                    param = RequsetHelper.createParam(req);
+                }
 
 
-            Method action = handler.getActionMethod();
-            Object result = null;
-            if (param.isEmpty()) {
-                result = ReflectionUtil.invokeMethod(o, action);
-            } else {
-                result = ReflectionUtil.invokeMethod(o, action, param);
-            }
+                Method action = handler.getActionMethod();
+                Object result = null;
+                if (param.isEmpty()) {
+                    result = ReflectionUtil.invokeMethod(o, action);
+                } else {
+                    result = ReflectionUtil.invokeMethod(o, action, param);
+                }
 
-            if (result instanceof View) {
-                handViewResult((View)result,req,resp);
-            } else if (result instanceof Data) {
-                handDataResult((Data)result,resp);
+                if (result instanceof View) {
+                    handViewResult((View)result,req,resp);
+                } else if (result instanceof Data) {
+                    handDataResult((Data)result,resp);
+                }
             }
+        }finally {
+            ServletHelper.destory();
         }
     }
 
