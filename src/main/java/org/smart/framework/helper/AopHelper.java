@@ -3,9 +3,11 @@ package org.smart.framework.helper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.smart.framework.annocation.Aspect;
+import org.smart.framework.annocation.Service;
 import org.smart.framework.proxy.AspectProxy;
 import org.smart.framework.proxy.Proxy;
 import org.smart.framework.proxy.ProxyManager;
+import org.smart.framework.proxy.TransactionProxy;
 
 import java.lang.annotation.Annotation;
 import java.util.*;
@@ -41,6 +43,7 @@ public final class AopHelper {
      */
     private static Map<Class<?>, Set<Class<?>>> createProxyMap() throws Exception {
         Map<Class<?>, Set<Class<?>>> proxyMap = new HashMap<>();
+        //添加一般代理类
         Set<Class<?>> proxyClasses = ClassHelper.getClassBySuper(AspectProxy.class);
         for (Class<?> t : proxyClasses) {
             if (t.isAnnotationPresent(Aspect.class)) {
@@ -49,6 +52,10 @@ public final class AopHelper {
                 proxyMap.put(t, targetClass);
             }
         }
+
+        // 为业务层增加事务类 会在代理时候检查方法是否有@Tansaction
+        Set<Class<?>> serviceClasses = ClassHelper.getClassSetByAnnotation(Service.class);
+        proxyMap.put(TransactionProxy.class,serviceClasses);
         return proxyMap;
     }
 

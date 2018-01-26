@@ -45,13 +45,14 @@ public class DatabaseHelper {
     public static <T> List<T> queryEntityList(Class<T> tClass, String sql, Object... params) {
         List<T> lists;
         Connection connection = getConnection();
+        System.out.println(CONNECTION_THREAD_LOCAL.get()+" in query");
         try {
             lists = QUERY_RUNNER.query(connection, sql, new BeanListHandler<T>(tClass), params);
         } catch (SQLException e) {
             LOGGER.error("Query entity failed", e);
             throw new RuntimeException(e);
         } finally {
-            closeConnection();
+          //  closeConnection();
         }
         return lists;
     }
@@ -93,6 +94,7 @@ public class DatabaseHelper {
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
+
             closeConnection();
         }
         return rows;
@@ -147,14 +149,18 @@ public class DatabaseHelper {
 
     public static void closeConnection() {
         Connection connection = CONNECTION_THREAD_LOCAL.get();
-        if (connection != null) {
-            try {
-                connection.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            } finally {
-                CONNECTION_THREAD_LOCAL.remove();
+        try {
+            if (connection != null && connection.getAutoCommit()) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                } finally {
+                    CONNECTION_THREAD_LOCAL.remove();
+                }
             }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 
