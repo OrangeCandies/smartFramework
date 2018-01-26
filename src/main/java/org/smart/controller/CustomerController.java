@@ -33,4 +33,9 @@ public class CustomerController {
         boolean result = customerService.createCustomer(filedMap,fileParam);
         return new Data(result);
     }
+
+    @Action("get:/customer_create")
+    public View create(){
+        return new View("customer_create.jsp");
+    }
 }

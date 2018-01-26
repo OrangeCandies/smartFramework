@@ -19,6 +19,10 @@ public class Param {
         this.fileParams = fileParams;
     }
 
+    public Param(List<FormParam> formParams) {
+        this.formParams = formParams;
+    }
+
     public Map<String,Object> getFiledMap(){
         Map<String,Object> map = new HashMap<>();
         if(CollectionUtil.isNotEmpty(formParams)){

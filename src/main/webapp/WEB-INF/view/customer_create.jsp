@@ -37,7 +37,7 @@
         <tr>
             <td>邮箱地址</td>
             <td>
-                <input type="text" name="mail" value="${customer.mail}"/>
+                <input type="text" name="email" value="${customer.mail}"/>
             </td>
         </tr>
         <tr>

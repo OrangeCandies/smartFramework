@@ -4,6 +4,7 @@ import org.smart.framework.annocation.Service;
 import org.smart.framework.annocation.Transaction;
 import org.smart.framework.bean.FileParam;
 import org.smart.framework.helper.DatabaseHelper;
+import org.smart.framework.helper.UploadHelper;
 import org.smart.model.Customer;
 
 import java.util.List;
@@ -27,8 +28,13 @@ public class CustomerService {
         return customer;
     }
 
+    @Transaction
     public boolean createCustomer(Map<String,Object> feildMap, FileParam fileParam) {
-        return DatabaseHelper.insertEntity(Customer.class,feildMap);
+        boolean result = DatabaseHelper.insertEntity(Customer.class,feildMap);
+        if(result){
+            UploadHelper.uploadFile("/temp/upload",fileParam);
+        }
+        return result;
     }
     public boolean updateCustomer(long id,Map<String,Object> feildMap) {
        return DatabaseHelper.updateEntity(Customer.class,id,feildMap);
