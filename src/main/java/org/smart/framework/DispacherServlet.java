@@ -32,8 +32,8 @@ public class DispacherServlet extends HttpServlet {
         ServletContext servletContext = config.getServletContext();
 
         // 注册Servlet 处理JSP请求
-        ServletRegistration jspServlet = servletContext.getServletRegistration("jsp");
-        jspServlet.addMapping(ConfigHelper.getAppJspPath() + "*");
+       ServletRegistration jspServlet = servletContext.getServletRegistration("jsp");
+       jspServlet.addMapping(ConfigHelper.getAppJspPath() + "*");
         //注册Servlet处理静态资源
         ServletRegistration defaultServlet = servletContext.getServletRegistration("default");
         defaultServlet.addMapping(ConfigHelper.getAppAssetPath() + "*");

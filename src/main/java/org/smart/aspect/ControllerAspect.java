@@ -26,4 +26,5 @@ public class ControllerAspect extends AspectProxy {
     public void after(Object targetClass, Method method, Object[] params) {
         LOGGER.warn("This service cost "+(System.currentTimeMillis()-beginTime)+" ms");
     }
+
 }
